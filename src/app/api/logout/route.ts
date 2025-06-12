@@ -7,14 +7,13 @@ export async function GET() {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     path: '/',
-    maxAge: 0, // ❌ Token'ı yok eder
+    maxAge: 0
   })
 
-  return new NextResponse(JSON.stringify({ message: 'Logged out' }), {
-    status: 200,
-    headers: {
-      'Set-Cookie': cookie,
-      'Content-Type': 'application/json',
-    },
-  })
+  const res = NextResponse.redirect(
+  new URL('/login', process.env.NEXT_PUBLIC_BASE_URL || process.env.LOCALWORK)
+)
+
+  res.headers.set('Set-Cookie', cookie)
+  return res
 }

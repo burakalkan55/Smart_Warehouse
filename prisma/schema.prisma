@@ -17,11 +17,12 @@ model User {
 }
 
 model Warehouse {
-  id        Int      @id @default(autoincrement())
-  name      String
-  floor     Int
-  capacity  Int
-  createdAt DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  floor        Int
+  capacity     Int
+  currentStock Int      @default(0)
+  createdAt    DateTime @default(now())
 }
 
 model Log {
