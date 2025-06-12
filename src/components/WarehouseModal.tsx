@@ -35,13 +35,15 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
 }) => {
   // local state for editable fields
   const [editCapacity, setEditCapacity] = useState(capacity)
-  const [editStock, setEditStock] = useState(currentStock)
+  // editStock artık string
+  const [editStock, setEditStock] = useState(currentStock === 0 ? '' : String(currentStock))
   const [editNameNum, setEditNameNum] = useState('')
 
   useEffect(() => {
     if (isOpen) {
       setEditCapacity(capacity)
-      setEditStock(currentStock)
+      // editStock'u string olarak ata
+      setEditStock(currentStock === 0 ? '' : String(currentStock))
       if (mode === 'add') {
         setEditNameNum('')
       } else {
@@ -71,6 +73,14 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
   // Artık her türlü string girilebilir
   const handleNameNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditNameNum(e.target.value)
+  }
+
+  // Güncel Ürün inputu değişimi
+  const handleStockChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value.replace(/\D/g, '') // sadece rakam
+    // baştaki sıfırları kaldır, ama tamamen boş bırakmaya izin ver
+    if (val.length > 1) val = val.replace(/^0+/, '')
+    setEditStock(val)
   }
 
   // Depo adı: harf + rakam
@@ -117,19 +127,22 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
             <div>
               <span className={styles.label}>Güncel Ürün:</span>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 min={0}
                 className={styles.value}
                 value={editStock}
-                onChange={e => setEditStock(Number(e.target.value))}
+                onChange={handleStockChange}
                 style={{ width: 80 }}
+                placeholder="0"
               />
             </div>
           )}
           <div>
             <span className={styles.label}>Doluluk Oranı:</span>
             <span className={styles.percent}>
-              %{editCapacity ? Math.floor((editStock / editCapacity) * 100) : 0}
+              %{editCapacity ? Math.floor(((editStock === '' ? 0 : Number(editStock)) / editCapacity) * 100) : 0}
             </span>
           </div>
         </div>
@@ -159,7 +172,8 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
                   alert('Kapasite boş olamaz.')
                   return
                 }
-                onSave?.({ capacity: editCapacity, currentStock: editStock })
+                // editStock boşsa 0 gönder
+                onSave?.({ capacity: editCapacity, currentStock: editStock === '' ? 0 : Number(editStock) })
               }
             }}
           >

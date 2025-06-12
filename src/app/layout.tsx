@@ -3,8 +3,8 @@ import './globals.css'
 export const metadata = {
   title: 'GCA Dijital Depo',
   description: 'GCA Dijital Depo Yönetim Sistemi',
-   icons: {
-    icon: '/favicon.ico', 
+  icons: {
+    icon: '/favicon.ico',
   },
 }
 
