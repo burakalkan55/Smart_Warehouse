@@ -21,10 +21,12 @@ export default function AdminClient({
   warehouses: Warehouse[]
 }) {
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null)
+  const [addModalOpen, setAddModalOpen] = useState(false)
+  const [addFloor, setAddFloor] = useState(0)
 
   // Modal açıkken body scrollunu engelle
   useEffect(() => {
-    if (selectedWarehouse) {
+    if (selectedWarehouse || addModalOpen) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
@@ -32,7 +34,7 @@ export default function AdminClient({
     return () => {
       document.body.style.overflow = ''
     }
-  }, [selectedWarehouse])
+  }, [selectedWarehouse, addModalOpen])
 
   function sortDepoNamesSmart(depolar: Warehouse[]) {
     return depolar.sort((a, b) => {
@@ -73,6 +75,31 @@ export default function AdminClient({
     window.location.reload()
   }
 
+  // Yeni depo ekleme fonksiyonu (artık modal ile)
+  const handleAddWarehouse = (floor: number) => {
+    setAddFloor(floor)
+    setAddModalOpen(true)
+  }
+
+  const handleAddSave = async (data: { name?: string; capacity: number }) => {
+    // Kat değeri 0 olabilir, bu yüzden addFloor kontrolünü kaldırıyoruz
+    if (!data.name || data.capacity <= 0) {
+      alert('Tüm alanları doldurun.')
+      return
+    }
+    try {
+      await axios.post('/api/warehouse', {
+        name: data.name,
+        floor: addFloor,
+        capacity: data.capacity,
+      })
+      setAddModalOpen(false)
+      window.location.reload()
+    } catch (e: any) {
+      alert(e?.response?.data?.message || 'Depo eklenemedi.')
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -103,7 +130,16 @@ export default function AdminClient({
 
       {grouped.map(g => (
         <div key={g.floor} className={styles.floorSection}>
-          <h3>Kat {g.floor} Depoları</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+            <h3 style={{ marginBottom: 0 }}>Kat {g.floor} Depoları</h3>
+            <button
+              className={styles.addWarehouseBtn}
+              onClick={() => handleAddWarehouse(g.floor)}
+              type="button"
+            >
+              ➕ Yeni Depo Ekle
+            </button>
+          </div>
           <div className={styles.grid}>
             {g.list.map(w => {
               const percent = w.capacity ? Math.floor((w.currentStock / w.capacity) * 100) : 0
@@ -130,6 +166,14 @@ export default function AdminClient({
         currentStock={selectedWarehouse?.currentStock || 0}
         capacity={selectedWarehouse?.capacity || 0}
         onSave={handleSave}
+        mode="edit"
+      />
+      <WarehouseModal
+        isOpen={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onSave={handleAddSave}
+        mode="add"
+        floor={addFloor}
       />
     </div>
   )

@@ -6,63 +6,126 @@ import styles from '@/styles/warehouseModal.module.css'
 interface WarehouseModalProps {
   isOpen: boolean
   onClose: () => void
-  onDelete: () => void
-  name: string
-  currentStock: number
-  capacity: number
-  onSave?: (data: { capacity: number; currentStock: number }) => void
+  onDelete?: () => void
+  name?: string
+  currentStock?: number
+  capacity?: number
+  onSave?: (data: { name?: string; capacity: number; currentStock: number }) => void
+  mode?: 'edit' | 'add'
+  floor?: number // hangi katın modalı açıldıysa parenttan gelsin
+}
+
+function getFloorLetter(floor: number | undefined) {
+  if (floor === 0) return 'A'
+  if (floor === -7) return 'B'
+  if (floor === -14) return 'C'
+  return ''
 }
 
 export const WarehouseModal: React.FC<WarehouseModalProps> = ({
   isOpen,
   onClose,
   onDelete,
-  name,
-  currentStock,
-  capacity,
+  name = '',
+  currentStock = 0,
+  capacity = 0,
   onSave,
+  mode = 'edit',
+  floor = 0,
 }) => {
   // local state for editable fields
   const [editCapacity, setEditCapacity] = useState(capacity)
   const [editStock, setEditStock] = useState(currentStock)
+  const [editNameNum, setEditNameNum] = useState('')
 
   useEffect(() => {
     if (isOpen) {
       setEditCapacity(capacity)
       setEditStock(currentStock)
+      if (mode === 'add') {
+        setEditNameNum('')
+      } else {
+        // edit modunda depo adının harf kısmını atla, sadece rakamı al
+        const match = name.match(/^[A-Z](\d+)$/i)
+        setEditNameNum(match ? match[1] : '')
+      }
     }
-  }, [isOpen, capacity, currentStock])
+  }, [isOpen, capacity, currentStock, name, mode])
 
   if (!isOpen) return null
+
+  const floorLetter = getFloorLetter(floor)
+
+  // Kapasite inputunda 0 silinebilmeli, boşsa 0 olarak setle
+  const handleCapacityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    if (val === '') setEditCapacity(0)
+    else setEditCapacity(Number(val))
+  }
+
+  // Sadece rakam girilsin
+  // const handleNameNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const val = e.target.value.replace(/\D/g, '')
+  //   setEditNameNum(val)
+  // }
+  // Artık her türlü string girilebilir
+  const handleNameNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditNameNum(e.target.value)
+  }
+
+  // Depo adı: harf + rakam
+  const composedName = `${floorLetter}${editNameNum}`
 
   return (
     <div className={styles.overlay}>
       <div className={styles.modal} tabIndex={-1}>
         <button className={styles.closeIcon} onClick={onClose} aria-label="Kapat">×</button>
-        <h2 className={styles.title}>{name} Detayları</h2>
+        <h2 className={styles.title}>
+          {mode === 'add' ? 'Yeni Depo Ekle' : `${name} Detayları`}
+        </h2>
         <div className={styles.details}>
+          {mode === 'add' && (
+            <>
+              <div>
+                <span className={styles.label}>Depo Adı:</span>
+                <span className={styles.value} style={{ paddingRight: 0, width: 30 }}>{floorLetter}</span>
+                <input
+                  type="text"
+                  className={styles.value}
+                  value={editNameNum}
+                  onChange={handleNameNumChange}
+                  style={{ width: 80, marginLeft: 0 }}
+                  placeholder="1"
+                  maxLength={10}
+                />
+              </div>
+            </>
+          )}
           <div>
             <span className={styles.label}>Kapasite:</span>
             <input
               type="number"
               min={0}
               className={styles.value}
-              value={editCapacity}
-              onChange={e => setEditCapacity(Number(e.target.value))}
+              value={editCapacity === 0 ? '' : editCapacity}
+              onChange={handleCapacityChange}
               style={{ width: 80 }}
+              placeholder="0"
             />
           </div>
-          <div>
-            <span className={styles.label}>Güncel Ürün:</span>
-            <input
-              type="number"
-              min={0}
-              className={styles.value}
-              value={editStock}
-              onChange={e => setEditStock(Number(e.target.value))}
-              style={{ width: 80 }}
-            />
-          </div>
+          {mode === 'edit' && (
+            <div>
+              <span className={styles.label}>Güncel Ürün:</span>
+              <input
+                type="number"
+                min={0}
+                className={styles.value}
+                value={editStock}
+                onChange={e => setEditStock(Number(e.target.value))}
+                style={{ width: 80 }}
+              />
+            </div>
+          )}
           <div>
             <span className={styles.label}>Doluluk Oranı:</span>
             <span className={styles.percent}>
@@ -71,17 +134,34 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
           </div>
         </div>
         <div className={styles.buttons}>
-          <button
-            className={styles.delete}
-            onClick={onDelete}
-            style={{ marginRight: 8 }}
-          >
-            🗑️ Depoyu Sil
-          </button>
+          {mode === 'edit' && onDelete && (
+            <button
+              className={styles.delete}
+              onClick={onDelete}
+              style={{ marginRight: 8 }}
+            >
+              🗑️ Depoyu Sil
+            </button>
+          )}
           <button
             className={styles.delete}
             style={{ background: '#3498db' }}
-            onClick={() => onSave?.({ capacity: editCapacity, currentStock: editStock })}
+            onClick={() => {
+              // Alan kontrolleri burada yapılmalı
+              if (mode === 'add') {
+                if (!editNameNum.trim() || !editCapacity || editCapacity <= 0) {
+                  alert('Tüm alanları doldurun.')
+                  return
+                }
+                onSave?.({ name: composedName, capacity: editCapacity, currentStock: 0 })
+              } else {
+                if (!editCapacity || editCapacity <= 0) {
+                  alert('Kapasite boş olamaz.')
+                  return
+                }
+                onSave?.({ capacity: editCapacity, currentStock: editStock })
+              }
+            }}
           >
             💾 Kaydet
           </button>

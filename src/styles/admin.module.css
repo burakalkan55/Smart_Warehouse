@@ -67,6 +67,24 @@
   background-color: #c0392b;
 }
 
+.addWarehouseBtn {
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.08);
+  margin-left: 8px;
+}
+
+.addWarehouseBtn:hover {
+  background-color: #219150;
+}
+
 .summary {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

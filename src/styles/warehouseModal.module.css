@@ -14,8 +14,8 @@
   color: #1a252f;
   border-radius: 18px;
   box-shadow: 0 12px 48px rgba(0,0,0,0.25);
-  padding: 38px 32px 28px 32px;
-  min-width: 320px;
+  padding: 38px 36px 28px 36px;
+  min-width: 350px;
   max-width: 95vw;
   min-height: 220px;
   position: relative;
@@ -51,7 +51,8 @@
 .title {
   font-size: 1.45rem;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
   text-align: center;
   color: #1a252f;
 }
@@ -59,34 +60,60 @@
 .details {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
   margin-bottom: 10px;
+  width: 100%;
+}
+
+.details > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0;
 }
 
 .label {
-  font-weight: 500;
-  color: #64748b;
-  margin-right: 8px;
-  font-size: 1rem;
+  font-weight: 600;
+  color: #34495e;
+  min-width: 110px;
+  text-align: right;
+  font-size: 1.04rem;
+  letter-spacing: 0.1px;
+  padding-right: 8px;
+  flex-shrink: 0;
 }
 
-.value {
-  font-weight: 600;
+.value, .details input, .details select {
+  font-weight: 500;
   color: #1a252f;
   font-size: 1.08rem;
+  border: 1px solid #dbeafe;
+  border-radius: 6px;
+  padding: 7px 12px;
+  background: #f4f8fb;
+  outline: none;
+  transition: border 0.2s;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.details input:focus, .details select:focus {
+  border: 1.5px solid #3498db;
+  background: #eaf6fd;
 }
 
 .percent {
   font-weight: 700;
   color: #3498db;
   font-size: 1.15rem;
+  margin-left: 6px;
 }
 
 .buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 14px;
+  margin-top: 18px;
 }
 
 .delete {
@@ -94,8 +121,8 @@
   color: #fff;
   border: none;
   border-radius: 7px;
-  padding: 10px 22px;
-  font-size: 1rem;
+  padding: 10px 26px;
+  font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
@@ -107,10 +134,20 @@
 
 @media (max-width: 600px) {
   .modal {
-    min-width: 90vw;
-    padding: 22px 8vw 18px 8vw;
+    min-width: 96vw;
+    padding: 18px 2vw 14px 2vw;
   }
   .title {
-    font-size: 1.1rem;
+    font-size: 1.08rem;
+  }
+  .label {
+    min-width: 80px;
+    font-size: 0.98rem;
+    padding-right: 4px;
+  }
+  .details > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 }
