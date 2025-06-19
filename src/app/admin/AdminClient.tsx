@@ -38,13 +38,27 @@ export default function AdminClient({
 
   function sortDepoNamesSmart(depolar: Warehouse[]) {
     return depolar.sort((a, b) => {
-      const aMatch = a.name.match(/([a-zA-Z]+)(\d+)/)
-      const bMatch = b.name.match(/([a-zA-Z]+)(\d+)/)
-      if (!aMatch || !bMatch) return a.name.localeCompare(b.name)
-      const [, aPrefix, aNum] = aMatch
-      const [, bPrefix, bNum] = bMatch
-      if (aPrefix !== bPrefix) return aPrefix.localeCompare(bPrefix)
-      return parseInt(aNum) - parseInt(bNum)
+      // Extract letter prefix and number from warehouse names
+      const aMatch = a.name.match(/^([a-zA-Z]+)(\d+)$/)
+      const bMatch = b.name.match(/^([a-zA-Z]+)(\d+)$/)
+      
+      // If either doesn't match the pattern, fall back to string comparison
+      if (!aMatch || !bMatch) {
+        return a.name.localeCompare(b.name)
+      }
+      
+      const [, aPrefix, aNumStr] = aMatch
+      const [, bPrefix, bNumStr] = bMatch
+      
+      // First compare the letter prefix
+      if (aPrefix !== bPrefix) {
+        return aPrefix.localeCompare(bPrefix)
+      }
+      
+      // Then compare numbers numerically (not as strings)
+      const aNum = parseInt(aNumStr, 10)
+      const bNum = parseInt(bNumStr, 10)
+      return aNum - bNum
     })
   }
 

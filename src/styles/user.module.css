@@ -146,28 +146,28 @@
 }
 
 .warehouseInfo {
-  font-size: 1.1rem;
-  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
   font-weight: 500;
 }
 
 .warehousePercent {
-  font-size: 1rem;
+  font-size: 1.2rem;
   background: rgba(255, 255, 255, 0.25);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
   font-weight: 600;
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .noData {
-  margin-top: 2rem;
+  margin-top: 3rem;
   color: #ecf0f1;
-  font-size: 1.1rem;
-  padding: 1.5rem;
+  font-size: 1.2rem;
+  padding: 2rem;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -209,12 +209,17 @@
   
   .warehouseGrid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
+    gap: 1.5rem;
   }
   
   .warehouseCard {
     padding: 1rem;
     min-height: 120px;
+  }
+  
+  .floorBtn {
+    flex: 1 1 auto;
+    padding: 0.8rem 1rem;
   }
 }
 
@@ -223,47 +228,40 @@
     padding: 0.5rem;
   }
   
-  .floorBtn {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
+  .card {
+    padding: 1rem;
   }
-  
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.2rem;
+  }
+
   .warehouseGrid {
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   }
-}
-.warehouseInfo {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-
-.warehousePercent {
-  font-size: 1.2rem;
-  background: rgba(255, 255, 255, 0.25);
-  padding: 0.8rem 1.5rem;
-  border-radius: 10px;
-  font-weight: 600;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.noData {
-  margin-top: 3rem;
-  color: #ecf0f1;
-  font-size: 1.2rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Responsive için ufak ayarlamalar */
-@media (max-width: 1400px) {
-  .warehouseGrid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  
+  .warehouseCard {
+    padding: 1.5rem;
+    min-height: 140px;
+  }
+  
+  .warehouseName {
+    font-size: 1.2rem;
+  }
+  
+  .warehouseInfo {
+    font-size: 1rem;
+  }
+  
+  .warehousePercent {
+    font-size: 0.9rem;
   }
 }
+ 
 
 @media (max-width: 1200px) {
   .warehouseGrid {
