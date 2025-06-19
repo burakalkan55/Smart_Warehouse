@@ -100,8 +100,9 @@ export default function UserClient({
             : w
         )
       )
-      toast.success(response.data.message || 'Transfer başarıyla yapıldı.')
-      setSelectedWarehouse(null)
+      toast.success(response.data.message || 'Transfer başarıyla yapıldı.', {
+        onClose: () => setSelectedWarehouse(null)
+      })
     } catch (error: any) {
       if (error?.message === 'Network Error') {
         toast.error('Ağ bağlantısı yok. Lütfen internetinizi kontrol edin.')
@@ -124,8 +125,9 @@ export default function UserClient({
             : w
         )
       )
-      toast.success(response.data.message || 'Stok başarıyla sistemden çıkartıldı.')
-      setSelectedWarehouse(null)
+      toast.success(response.data.message || 'Stok başarıyla sistemden çıkartıldı.', {
+        onClose: () => setSelectedWarehouse(null)
+      })
     } catch (error: any) {
       toast.error(error?.response?.data?.message || 'Çıkarma işlemi başarısız')
     }
@@ -133,7 +135,8 @@ export default function UserClient({
 
   return (
     <>
-      <ToastContainer position="top-center" autoClose={2000} />
+      {/* ToastContainer'ı sadece burada bırakın, modal veya başka yerde kullanmayın */}
+      <ToastContainer position="top-center" autoClose={1000} />
       <div className={styles.container}>
         <h1 className={styles.title}>Merhaba, {user.name}!</h1>
 

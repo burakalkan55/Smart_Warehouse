@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect } from 'react'
 import styles from '@/styles/userWarehouseModal.module.css'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 interface Warehouse {
@@ -108,7 +108,7 @@ export const UserWarehouseModal: React.FC<UserWarehouseModalProps> = ({
     }
 
     onTransfer(warehouse.id, toId, amount)
-    // toast.success will be handled in parent after state update
+    // toast.success kaldırıldı, parent handle edecek
     // onClose() will be handled in parent after toast
   }
 
@@ -119,7 +119,7 @@ export const UserWarehouseModal: React.FC<UserWarehouseModalProps> = ({
     }
     const amount = parseInt(removeAmount)
     onRemove(warehouse.id, amount)
-    // toast.success will be handled in parent after state update
+    // toast.success kaldırıldı, parent handle edecek
     // onClose() will be handled in parent after toast
   }
 
@@ -129,7 +129,6 @@ export const UserWarehouseModal: React.FC<UserWarehouseModalProps> = ({
 
   return (
     <>
-      <ToastContainer position="top-center" autoClose={2000} />
       <div className={styles.overlay}>
         <div className={styles.modal}>
           <button className={styles.closeIcon} onClick={onClose}>×</button>
@@ -222,3 +221,4 @@ export const UserWarehouseModal: React.FC<UserWarehouseModalProps> = ({
     </>
   )
 }
+

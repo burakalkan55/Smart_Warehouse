@@ -81,16 +81,18 @@ export default function AdminClient({
     if (!selectedWarehouse) return
     await axios.delete(`/api/warehouse/${selectedWarehouse.id}`)
     setSelectedWarehouse(null)
-    toast.success('Depo başarıyla silindi.')
-    window.location.reload()
+    toast.success('Depo başarıyla silindi.', {
+      onClose: () => window.location.reload()
+    })
   }
 
   const handleSave = async (data: { capacity: number; currentStock: number }) => {
     if (!selectedWarehouse) return
     await axios.patch(`/api/warehouse/${selectedWarehouse.id}`, data)
     setSelectedWarehouse(null)
-    toast.success('Depo bilgileri güncellendi.')
-    window.location.reload()
+    toast.success('Depo bilgileri güncellendi.', {
+      onClose: () => window.location.reload()
+    })
   }
 
   // Yeni depo ekleme fonksiyonu (artık modal ile)
@@ -111,8 +113,9 @@ export default function AdminClient({
         capacity: data.capacity,
       })
       setAddModalOpen(false)
-      toast.success('Depo başarıyla eklendi.')
-      window.location.reload()
+      toast.success('Depo başarıyla eklendi.', {
+        onClose: () => window.location.reload()
+      })
     } catch (e: any) {
       toast.error(e?.response?.data?.message || 'Depo eklenemedi.')
     }
@@ -120,7 +123,8 @@ export default function AdminClient({
 
   return (
     <>
-      <ToastContainer position="top-center" autoClose={2000} />
+      {/* ToastContainer'ı component dışına aldık, sadece burada bırakın, modal veya başka yerde kullanmayın */}
+      <ToastContainer position="top-center" autoClose={1000} />
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.date}>{new Date().toLocaleDateString('tr-TR')}</div>

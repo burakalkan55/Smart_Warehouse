@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import styles from '@/styles/warehouseModal.module.css'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 interface WarehouseModalProps {
@@ -90,7 +90,6 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
 
   return (
     <>
-      <ToastContainer position="top-center" autoClose={2000} />
       <div className={styles.overlay}>
         <div className={styles.modal} tabIndex={-1}>
           <button className={styles.closeIcon} onClick={onClose} aria-label="Kapat">×</button>
@@ -189,3 +188,4 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
     </>
   )
 }
+
