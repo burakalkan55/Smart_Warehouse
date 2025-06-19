@@ -6,7 +6,8 @@
 
 import React, { useState, useEffect } from 'react'
 import styles from '@/styles/userWarehouseModal.module.css'
-import { toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface Warehouse {
   id: number
@@ -107,8 +108,8 @@ export const UserWarehouseModal: React.FC<UserWarehouseModalProps> = ({
     }
 
     onTransfer(warehouse.id, toId, amount)
-    toast.success('Transfer başarıyla yapıldı.')
-    onClose()
+    // toast.success will be handled in parent after state update
+    // onClose() will be handled in parent after toast
   }
 
   const handleRemove = () => {
@@ -118,8 +119,8 @@ export const UserWarehouseModal: React.FC<UserWarehouseModalProps> = ({
     }
     const amount = parseInt(removeAmount)
     onRemove(warehouse.id, amount)
-    toast.success('Stok başarıyla sistemden çıkartıldı.')
-    onClose()
+    // toast.success will be handled in parent after state update
+    // onClose() will be handled in parent after toast
   }
 
   const percent = warehouse.capacity
@@ -127,94 +128,97 @@ export const UserWarehouseModal: React.FC<UserWarehouseModalProps> = ({
     : 0
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-        <button className={styles.closeIcon} onClick={onClose}>×</button>
-        <h2 className={styles.title}>{warehouse.name} İşlemleri</h2>
+    <>
+      <ToastContainer position="top-center" autoClose={2000} />
+      <div className={styles.overlay}>
+        <div className={styles.modal}>
+          <button className={styles.closeIcon} onClick={onClose}>×</button>
+          <h2 className={styles.title}>{warehouse.name} İşlemleri</h2>
 
-        <div className={styles.warehouseInfo}>
-          <div className={styles.infoItem}>
-            <span>Mevcut Stok:</span>
-            <span>{warehouse.currentStock}</span>
-          </div>
-          <div className={styles.infoItem}>
-            <span>Kapasite:</span>
-            <span>{warehouse.capacity}</span>
-          </div>
-          <div className={styles.infoItem}>
-            <span>Doluluk:</span>
-            <span>%{percent}</span>
-          </div>
-        </div>
-
-        <div className={styles.tabs}>
-          <button
-            className={`${styles.tab} ${activeTab === 'transfer' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('transfer')}
-          >
-            🔄 Transfer
-          </button>
-          <button
-            className={`${styles.tab} ${activeTab === 'remove' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('remove')}
-          >
-            📤 Çıkart
-          </button>
-        </div>
-
-        {activeTab === 'transfer' && (
-          <div className={styles.tabContent}>
-            <div className={styles.inputGroup}>
-              <label>Transfer Miktarı:</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={transferAmount}
-                onChange={handleTransferAmountChange}
-                placeholder="0"
-                className={styles.input}
-              />
+          <div className={styles.warehouseInfo}>
+            <div className={styles.infoItem}>
+              <span>Mevcut Stok:</span>
+              <span>{warehouse.currentStock}</span>
             </div>
-            <div className={styles.inputGroup}>
-              <label>Hedef Depo:</label>
-              <select
-                value={targetWarehouse}
-                onChange={(e) => setTargetWarehouse(e.target.value)}
-                className={styles.select}
-              >
-                <option value="">Seçiniz...</option>
-                {sameFloorWarehouses.map(wh => (
-                  <option key={wh.id} value={wh.id}>
-                    {wh.name} ({wh.currentStock}/{wh.capacity})
-                  </option>
-                ))}
-              </select>
+            <div className={styles.infoItem}>
+              <span>Kapasite:</span>
+              <span>{warehouse.capacity}</span>
             </div>
-            <button className={styles.actionBtn} onClick={handleTransfer}>
-              🔄 Transfer Yap
+            <div className={styles.infoItem}>
+              <span>Doluluk:</span>
+              <span>%{percent}</span>
+            </div>
+          </div>
+
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${activeTab === 'transfer' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('transfer')}
+            >
+              🔄 Transfer
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === 'remove' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('remove')}
+            >
+              📤 Çıkart
             </button>
           </div>
-        )}
 
-        {activeTab === 'remove' && (
-          <div className={styles.tabContent}>
-            <div className={styles.inputGroup}>
-              <label>Çıkarılacak Miktar:</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={removeAmount}
-                onChange={handleRemoveAmountChange}
-                placeholder="0"
-                className={styles.input}
-              />
+          {activeTab === 'transfer' && (
+            <div className={styles.tabContent}>
+              <div className={styles.inputGroup}>
+                <label>Transfer Miktarı:</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={transferAmount}
+                  onChange={handleTransferAmountChange}
+                  placeholder="0"
+                  className={styles.input}
+                />
+              </div>
+              <div className={styles.inputGroup}>
+                <label>Hedef Depo:</label>
+                <select
+                  value={targetWarehouse}
+                  onChange={(e) => setTargetWarehouse(e.target.value)}
+                  className={styles.select}
+                >
+                  <option value="">Seçiniz...</option>
+                  {sameFloorWarehouses.map(wh => (
+                    <option key={wh.id} value={wh.id}>
+                      {wh.name} ({wh.currentStock}/{wh.capacity})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button className={styles.actionBtn} onClick={handleTransfer}>
+                🔄 Transfer Yap
+              </button>
             </div>
-            <button className={styles.actionBtn} onClick={handleRemove}>
-              📤 Sistemden Çıkart
-            </button>
-          </div>
-        )}
+          )}
+
+          {activeTab === 'remove' && (
+            <div className={styles.tabContent}>
+              <div className={styles.inputGroup}>
+                <label>Çıkarılacak Miktar:</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={removeAmount}
+                  onChange={handleRemoveAmountChange}
+                  placeholder="0"
+                  className={styles.input}
+                />
+              </div>
+              <button className={styles.actionBtn} onClick={handleRemove}>
+                📤 Sistemden Çıkart
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

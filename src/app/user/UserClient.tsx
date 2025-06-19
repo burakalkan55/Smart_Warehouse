@@ -4,6 +4,8 @@ import styles from '@/styles/user.module.css'
 import { UserWarehouseModal } from '@/components/UserWarehouseModal'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface Warehouse {
   id: number
@@ -89,9 +91,6 @@ export default function UserClient({
         toId,
         amount
       })
-      alert(response.data.message)
-      setSelectedWarehouse(null)
-      // Depoları güncelle (manuel olarak stokları güncelle)
       setWarehouses(prev =>
         prev.map(w =>
           w.id === fromId
@@ -101,8 +100,14 @@ export default function UserClient({
             : w
         )
       )
+      toast.success(response.data.message || 'Transfer başarıyla yapıldı.')
+      setSelectedWarehouse(null)
     } catch (error: any) {
-      alert(error?.response?.data?.message || 'Transfer başarısız')
+      if (error?.message === 'Network Error') {
+        toast.error('Ağ bağlantısı yok. Lütfen internetinizi kontrol edin.')
+      } else {
+        toast.error(error?.response?.data?.message || 'Transfer başarısız')
+      }
     }
   }
 
@@ -112,9 +117,6 @@ export default function UserClient({
         warehouseId,
         amount
       })
-      alert(response.data.message)
-      setSelectedWarehouse(null)
-      // Depoyu güncelle (stok azalt)
       setWarehouses(prev =>
         prev.map(w =>
           w.id === warehouseId
@@ -122,73 +124,79 @@ export default function UserClient({
             : w
         )
       )
+      toast.success(response.data.message || 'Stok başarıyla sistemden çıkartıldı.')
+      setSelectedWarehouse(null)
     } catch (error: any) {
-      alert(error?.response?.data?.message || 'Çıkarma işlemi başarısız')
+      toast.error(error?.response?.data?.message || 'Çıkarma işlemi başarısız')
     }
   }
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Merhaba, {user.name}!</h1>
+    <>
+      <ToastContainer position="top-center" autoClose={2000} />
+      <div className={styles.container}>
+        <h1 className={styles.title}>Merhaba, {user.name}!</h1>
 
-      <section className={styles.floorSelection}>
-        <h2 className={styles.sectionTitle}>🏢 Kat Seçimi</h2>
-        <div className={styles.floorButtons}>
-          {floors.map(floor => (
-            <button
-              key={floor}
-              className={`${styles.floorBtn} ${
-                selectedFloor === floor ? styles.floorBtnActive : ''
-              }`}
-              onClick={() => setSelectedFloor(floor)}
-            >
-              {floorNames[floor.toString() as keyof typeof floorNames]}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.warehouseSection}>
-        <div className={styles.warehouseGrid}>
-          {selectedWarehouses.map(warehouse => {
-            const percent = warehouse.capacity 
-              ? Math.floor((warehouse.currentStock / warehouse.capacity) * 100) 
-              : 0
-            return (
-              <div 
-                key={warehouse.id} 
-                className={styles.warehouseCard}
-                onClick={() => setSelectedWarehouse(warehouse)}
-                style={{ cursor: 'pointer' }}
+        <section className={styles.floorSelection}>
+          <h2 className={styles.sectionTitle}>🏢 Kat Seçimi</h2>
+          <div className={styles.floorButtons}>
+            {floors.map(floor => (
+              <button
+                key={floor}
+                className={`${styles.floorBtn} ${
+                  selectedFloor === floor ? styles.floorBtnActive : ''
+                }`}
+                onClick={() => setSelectedFloor(floor)}
               >
-                <div className={styles.warehouseName}>{warehouse.name}</div>
-                
-                <div className={styles.warehousePercent}>%{percent}</div>
-              </div>
-            )
-          })}
-        </div>
-        {selectedWarehouses.length === 0 && (
-          <div className={styles.noData}>
-            Bu katta henüz depo bulunmuyor.
+                {floorNames[floor.toString() as keyof typeof floorNames]}
+              </button>
+            ))}
           </div>
-        )}
-      </section>
+        </section>
 
-      <div className={styles.footer}>
-        <form action="/api/logout" method="GET">
-          <button className={styles.logout}>Çıkış Yap</button>
-        </form>
+        <section className={styles.warehouseSection}>
+          <div className={styles.warehouseGrid}>
+            {selectedWarehouses.map(warehouse => {
+              const percent = warehouse.capacity 
+                ? Math.floor((warehouse.currentStock / warehouse.capacity) * 100) 
+                : 0
+              return (
+                <div 
+                  key={warehouse.id} 
+                  className={styles.warehouseCard}
+                  onClick={() => setSelectedWarehouse(warehouse)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className={styles.warehouseName}>{warehouse.name}</div>
+                  
+                  <div className={styles.warehousePercent}>%{percent}</div>
+                </div>
+              )
+            })}
+          </div>
+          {selectedWarehouses.length === 0 && (
+            <div className={styles.noData}>
+              Bu katta henüz depo bulunmuyor.
+            </div>
+          )}
+        </section>
+
+        <div className={styles.footer}>
+          <form action="/api/logout" method="GET">
+            <button className={styles.logout}>Çıkış Yap</button>
+          </form>
+        </div>
+
+        <UserWarehouseModal
+          isOpen={!!selectedWarehouse}
+          onClose={() => setSelectedWarehouse(null)}
+          warehouse={selectedWarehouse}
+          warehouses={warehouses}
+          onTransfer={handleTransfer}
+          onRemove={handleRemove}
+        />
       </div>
-
-      <UserWarehouseModal
-        isOpen={!!selectedWarehouse}
-        onClose={() => setSelectedWarehouse(null)}
-        warehouse={selectedWarehouse}
-        warehouses={warehouses}
-        onTransfer={handleTransfer}
-        onRemove={handleRemove}
-      />
-    </div>
+    </>
   )
 }
+

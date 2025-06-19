@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import styles from '@/styles/warehouseModal.module.css'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface WarehouseModalProps {
   isOpen: boolean
@@ -87,100 +89,103 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
   const composedName = `${floorLetter}${editNameNum}`
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal} tabIndex={-1}>
-        <button className={styles.closeIcon} onClick={onClose} aria-label="Kapat">×</button>
-        <h2 className={styles.title}>
-          {mode === 'add' ? 'Yeni Depo Ekle' : `${name} Detayları`}
-        </h2>
-        <div className={styles.details}>
-          {mode === 'add' && (
-            <>
-              <div>
-                <span className={styles.label}>Depo Adı:</span>
-                <span className={styles.value} style={{ paddingRight: 0, width: 30 }}>{floorLetter}</span>
-                <input
-                  type="text"
-                  className={styles.value}
-                  value={editNameNum}
-                  onChange={handleNameNumChange}
-                  style={{ width: 80, marginLeft: 0 }}
-                  placeholder="1"
-                  maxLength={10}
-                />
-              </div>
-            </>
-          )}
-          <div>
-            <span className={styles.label}>Kapasite:</span>
-            <input
-              type="number"
-              min={0}
-              className={styles.value}
-              value={editCapacity === 0 ? '' : editCapacity}
-              onChange={handleCapacityChange}
-              style={{ width: 80 }}
-              placeholder="0"
-            />
-          </div>
-          {mode === 'edit' && (
+    <>
+      <ToastContainer position="top-center" autoClose={2000} />
+      <div className={styles.overlay}>
+        <div className={styles.modal} tabIndex={-1}>
+          <button className={styles.closeIcon} onClick={onClose} aria-label="Kapat">×</button>
+          <h2 className={styles.title}>
+            {mode === 'add' ? 'Yeni Depo Ekle' : `${name} Detayları`}
+          </h2>
+          <div className={styles.details}>
+            {mode === 'add' && (
+              <>
+                <div>
+                  <span className={styles.label}>Depo Adı:</span>
+                  <span className={styles.value} style={{ paddingRight: 0, width: 30 }}>{floorLetter}</span>
+                  <input
+                    type="text"
+                    className={styles.value}
+                    value={editNameNum}
+                    onChange={handleNameNumChange}
+                    style={{ width: 80, marginLeft: 0 }}
+                    placeholder="1"
+                    maxLength={10}
+                  />
+                </div>
+              </>
+            )}
             <div>
-              <span className={styles.label}>Güncel Ürün:</span>
+              <span className={styles.label}>Kapasite:</span>
               <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
+                type="number"
                 min={0}
                 className={styles.value}
-                value={editStock}
-                onChange={handleStockChange}
+                value={editCapacity === 0 ? '' : editCapacity}
+                onChange={handleCapacityChange}
                 style={{ width: 80 }}
                 placeholder="0"
               />
             </div>
-          )}
-          <div>
-            <span className={styles.label}>Doluluk Oranı:</span>
-            <span className={styles.percent}>
-              %{editCapacity ? Math.floor(((editStock === '' ? 0 : Number(editStock)) / editCapacity) * 100) : 0}
-            </span>
+            {mode === 'edit' && (
+              <div>
+                <span className={styles.label}>Güncel Ürün:</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  min={0}
+                  className={styles.value}
+                  value={editStock}
+                  onChange={handleStockChange}
+                  style={{ width: 80 }}
+                  placeholder="0"
+                />
+              </div>
+            )}
+            <div>
+              <span className={styles.label}>Doluluk Oranı:</span>
+              <span className={styles.percent}>
+                %{editCapacity ? Math.floor(((editStock === '' ? 0 : Number(editStock)) / editCapacity) * 100) : 0}
+              </span>
+            </div>
           </div>
-        </div>
-        <div className={styles.buttons}>
-          {mode === 'edit' && onDelete && (
+          <div className={styles.buttons}>
+            {mode === 'edit' && onDelete && (
+              <button
+                className={styles.delete}
+                onClick={onDelete}
+                style={{ marginRight: 8 }}
+              >
+                🗑️ Depoyu Sil
+              </button>
+            )}
             <button
               className={styles.delete}
-              onClick={onDelete}
-              style={{ marginRight: 8 }}
+              style={{ background: '#3498db' }}
+              onClick={() => {
+                // Alan kontrolleri burada yapılmalı
+                if (mode === 'add') {
+                  if (!editNameNum.trim() || !editCapacity || editCapacity <= 0) {
+                    toast.error('Tüm alanları doldurun.')
+                    return
+                  }
+                  onSave?.({ name: composedName, capacity: editCapacity, currentStock: 0 })
+                } else {
+                  if (!editCapacity || editCapacity <= 0) {
+                    toast.error('Kapasite boş olamaz.')
+                    return
+                  }
+                  // editStock boşsa 0 gönder
+                  onSave?.({ capacity: editCapacity, currentStock: editStock === '' ? 0 : Number(editStock) })
+                }
+              }}
             >
-              🗑️ Depoyu Sil
+              💾 Kaydet
             </button>
-          )}
-          <button
-            className={styles.delete}
-            style={{ background: '#3498db' }}
-            onClick={() => {
-              // Alan kontrolleri burada yapılmalı
-              if (mode === 'add') {
-                if (!editNameNum.trim() || !editCapacity || editCapacity <= 0) {
-                  alert('Tüm alanları doldurun.')
-                  return
-                }
-                onSave?.({ name: composedName, capacity: editCapacity, currentStock: 0 })
-              } else {
-                if (!editCapacity || editCapacity <= 0) {
-                  alert('Kapasite boş olamaz.')
-                  return
-                }
-                // editStock boşsa 0 gönder
-                onSave?.({ capacity: editCapacity, currentStock: editStock === '' ? 0 : Number(editStock) })
-              }
-            }}
-          >
-            💾 Kaydet
-          </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

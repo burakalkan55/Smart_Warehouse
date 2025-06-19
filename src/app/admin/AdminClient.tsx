@@ -4,6 +4,8 @@ import styles from '@/styles/admin.module.css'
 import { WarehouseModal } from '@/components/WarehouseModal'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface Warehouse {
   id: number
@@ -79,6 +81,7 @@ export default function AdminClient({
     if (!selectedWarehouse) return
     await axios.delete(`/api/warehouse/${selectedWarehouse.id}`)
     setSelectedWarehouse(null)
+    toast.success('Depo başarıyla silindi.')
     window.location.reload()
   }
 
@@ -86,6 +89,7 @@ export default function AdminClient({
     if (!selectedWarehouse) return
     await axios.patch(`/api/warehouse/${selectedWarehouse.id}`, data)
     setSelectedWarehouse(null)
+    toast.success('Depo bilgileri güncellendi.')
     window.location.reload()
   }
 
@@ -96,9 +100,8 @@ export default function AdminClient({
   }
 
   const handleAddSave = async (data: { name?: string; capacity: number }) => {
-    // Kat değeri 0 olabilir, bu yüzden addFloor kontrolünü kaldırıyoruz
     if (!data.name || data.capacity <= 0) {
-      alert('Tüm alanları doldurun.')
+      toast.error('Tüm alanları doldurun.')
       return
     }
     try {
@@ -108,87 +111,91 @@ export default function AdminClient({
         capacity: data.capacity,
       })
       setAddModalOpen(false)
+      toast.success('Depo başarıyla eklendi.')
       window.location.reload()
     } catch (e: any) {
-      alert(e?.response?.data?.message || 'Depo eklenemedi.')
+      toast.error(e?.response?.data?.message || 'Depo eklenemedi.')
     }
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.date}>{new Date().toLocaleDateString('tr-TR')}</div>
-        <div className={styles.username}>{user?.name}</div>
-        <div className={styles.actions}>
-          <button className={styles.adminBtn}>Admin Kontrol</button>
-          <form action="/api/logout" method="GET">
-            <button className={styles.logoutBtn}>Çıkış Yap</button>
-          </form>
+    <>
+      <ToastContainer position="top-center" autoClose={2000} />
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.date}>{new Date().toLocaleDateString('tr-TR')}</div>
+          <div className={styles.username}>{user?.name}</div>
+          <div className={styles.actions}>
+            <button className={styles.adminBtn}>Admin Kontrol</button>
+            <form action="/api/logout" method="GET">
+              <button className={styles.logoutBtn}>Çıkış Yap</button>
+            </form>
+          </div>
         </div>
-      </div>
 
-      <div className={styles.summary}>
-        <div className={styles.card}>
-          <h4>Genel Doluluk Oranı</h4>
-          <p>{totalStock}/{totalCapacity}</p>
-          <strong>%{totalPercent}</strong>
+        <div className={styles.summary}>
+          <div className={styles.card}>
+            <h4>Genel Doluluk Oranı</h4>
+            <p>{totalStock}/{totalCapacity}</p>
+            <strong>%{totalPercent}</strong>
+          </div>
+          {grouped.map(g => (
+            <div key={g.floor} className={styles.card}>
+              <h4>Kat {g.floor} Doluluk Oranı</h4>
+              <p>{g.stock}/{g.total}</p>
+              <strong>%{g.percent}</strong>
+            </div>
+          ))}
         </div>
+
         {grouped.map(g => (
-          <div key={g.floor} className={styles.card}>
-            <h4>Kat {g.floor} Doluluk Oranı</h4>
-            <p>{g.stock}/{g.total}</p>
-            <strong>%{g.percent}</strong>
+          <div key={g.floor} className={styles.floorSection}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+              <h3 style={{ marginBottom: 0 }}>Kat {g.floor} Depoları</h3>
+              <button
+                className={styles.addWarehouseBtn}
+                onClick={() => handleAddWarehouse(g.floor)}
+                type="button"
+              >
+                ➕ Yeni Depo Ekle
+              </button>
+            </div>
+            <div className={styles.grid}>
+              {g.list.map(w => {
+                const percent = w.capacity ? Math.floor((w.currentStock / w.capacity) * 100) : 0
+                return (
+                  <div
+                    key={w.id}
+                    className={styles.cardDepo}
+                    onClick={() => setSelectedWarehouse(w)}
+                  >
+                    {w.name} ({w.currentStock} Adet Ürün)
+                    <div className={styles.percent}>%{percent}</div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         ))}
+
+        <WarehouseModal
+          isOpen={!!selectedWarehouse}
+          onClose={() => setSelectedWarehouse(null)}
+          onDelete={handleDelete}
+          name={selectedWarehouse?.name || ''}
+          currentStock={selectedWarehouse?.currentStock || 0}
+          capacity={selectedWarehouse?.capacity || 0}
+          onSave={handleSave}
+          mode="edit"
+        />
+        <WarehouseModal
+          isOpen={addModalOpen}
+          onClose={() => setAddModalOpen(false)}
+          onSave={handleAddSave}
+          mode="add"
+          floor={addFloor}
+        />
       </div>
-
-      {grouped.map(g => (
-        <div key={g.floor} className={styles.floorSection}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-            <h3 style={{ marginBottom: 0 }}>Kat {g.floor} Depoları</h3>
-            <button
-              className={styles.addWarehouseBtn}
-              onClick={() => handleAddWarehouse(g.floor)}
-              type="button"
-            >
-              ➕ Yeni Depo Ekle
-            </button>
-          </div>
-          <div className={styles.grid}>
-            {g.list.map(w => {
-              const percent = w.capacity ? Math.floor((w.currentStock / w.capacity) * 100) : 0
-              return (
-                <div
-                  key={w.id}
-                  className={styles.cardDepo}
-                  onClick={() => setSelectedWarehouse(w)}
-                >
-                  {w.name} ({w.currentStock} Adet Ürün)
-                  <div className={styles.percent}>%{percent}</div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      ))}
-
-      <WarehouseModal
-        isOpen={!!selectedWarehouse}
-        onClose={() => setSelectedWarehouse(null)}
-        onDelete={handleDelete}
-        name={selectedWarehouse?.name || ''}
-        currentStock={selectedWarehouse?.currentStock || 0}
-        capacity={selectedWarehouse?.capacity || 0}
-        onSave={handleSave}
-        mode="edit"
-      />
-      <WarehouseModal
-        isOpen={addModalOpen}
-        onClose={() => setAddModalOpen(false)}
-        onSave={handleAddSave}
-        mode="add"
-        floor={addFloor}
-      />
-    </div>
+    </>
   )
 }
