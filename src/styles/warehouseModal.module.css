@@ -136,6 +136,7 @@
   .modal {
     min-width: 96vw;
     padding: 18px 2vw 14px 2vw;
+    margin-top: 24px; /* Ekranın üstüne yaklaşsın */
   }
   .title {
     font-size: 1.08rem;
@@ -149,5 +150,14 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+  }
+}
+
+@media (max-width: 900px) {
+  .overlay {
+    align-items: flex-start; /* Modalı üstte hizala */
+  }
+  .modal {
+    margin-top: 32px; /* Üstten boşluk bırak */
   }
 }

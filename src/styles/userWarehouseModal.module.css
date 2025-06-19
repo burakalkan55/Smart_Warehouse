@@ -4,7 +4,7 @@
   background: rgba(44, 62, 80, 0.85);
   z-index: 1000;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Ortalamak yerine üstte hizala */
   justify-content: center;
   pointer-events: auto;
 }
@@ -23,6 +23,7 @@
   gap: 1.5rem;
   animation: modalPop 0.3s ease-out both;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 32px; /* Üstten boşluk bırak */
 }
 
 @keyframes modalPop {
@@ -177,6 +178,7 @@
   .modal {
     min-width: 95vw;
     padding: 1.5rem;
+    margin-top: 16px; /* Mobilde de üstte boşluk bırak */
   }
   
   .warehouseInfo {
@@ -187,5 +189,14 @@
   .infoItem {
     flex-direction: row;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 900px) {
+  .overlay {
+    align-items: flex-start; /* Modalı üstte hizala */
+  }
+  .modal {
+    margin-top: 32px; /* Üstten boşluk bırak */
   }
 }

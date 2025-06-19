@@ -162,9 +162,7 @@ export default function UserClient({
                 style={{ cursor: 'pointer' }}
               >
                 <div className={styles.warehouseName}>{warehouse.name}</div>
-                <div className={styles.warehouseInfo}>
-                  {warehouse.currentStock}/{warehouse.capacity}
-                </div>
+                
                 <div className={styles.warehousePercent}>%{percent}</div>
               </div>
             )
