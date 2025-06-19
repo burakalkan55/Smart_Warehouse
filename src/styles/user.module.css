@@ -1,106 +1,319 @@
+/* Genel düzenler */
 .wrapper {
-  min-height: 100vh;
-  height: 100vh;
-  width: 100vw;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: #44496a;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  align-items: flex-start;
+  padding: 1rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  overflow-x: hidden;
 }
 
+/* Kart container - More compact */
 .card {
-  width: 100%;
-  max-width: 600px;
-  background-color: #50557a;
+  background: linear-gradient(145deg, #34495e 0%, #2c3e50 100%);
   border-radius: 16px;
-  padding: 2.5rem 2rem;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  color: white;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  color: #ecf0f1;
+  backdrop-filter: blur(10px);
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* Header - Compact */
 .header {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #6b7092;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .title {
-  font-size: 2.2rem;
-  font-weight: 400;
-  color: #fff;
-  margin-bottom: 0.5rem;
-  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  background: linear-gradient(135deg, #3498db, #9b59b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.userInfo {
-  font-size: 1.1rem;
-  color: #b1b5c9;
-  text-align: center;
+/* Kat seçimi - Compact */
+.floorSelection {
   margin-bottom: 1.5rem;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.content {
-  background-color: #6b7092;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+.sectionTitle {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #3498db;
+}
+
+.floorButtons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.floorBtn {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(149, 165, 166, 0.2);
+}
+
+.floorBtn:hover {
+  background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(149, 165, 166, 0.3);
+}
+
+.floorBtnActive {
+  background: linear-gradient(135deg, #3498db, #2980b9);
   color: #fff;
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+  transform: translateY(-1px);
+}
+
+.floorBtnActive:hover {
+  background: linear-gradient(135deg, #2980b9, #21618c);
+  box-shadow: 0 10px 25px rgba(52, 152, 219, 0.5);
+}
+
+/* Depo listesi - Compact */
+.warehouseSection {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  flex-grow: 1;
+}
+
+.warehouseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.warehouseCard {
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  min-height: 140px;
+  box-shadow: 0 8px 20px rgba(41, 128, 185, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.warehouseCard:hover {
+  transform: translateY(-4px);
+  background: linear-gradient(135deg, #3498db, #5dade2);
+  box-shadow: 0 15px 30px rgba(41, 128, 185, 0.4);
+}
+
+.warehouseName {
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+}
+
+.warehouseInfo {
   font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+}
+
+.warehousePercent {
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.noData {
+  margin-top: 2rem;
+  color: #ecf0f1;
+  font-size: 1.1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Footer - Logout button at bottom */
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+  padding: 1rem;
 }
 
 .logout {
-  margin-top: 1rem;
-  padding: 0.9rem 1.5rem;
-  background-color: #23273a;
-  color: white;
+  padding: 0.8rem 2rem;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  font-weight: 400;
-  font-size: 1.1rem;
-  transition: background-color 0.3s ease;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
 }
 
 .logout:hover {
-  background-color: #181b28;
+  background: linear-gradient(135deg, #c0392b, #a93226);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
 }
 
-@media (max-width: 600px) {
+/* Responsive */
+@media (max-width: 768px) {
   .card {
-    max-width: 100%;
-    padding: 1.5rem 0.8rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    padding: 1rem;
   }
-
+  
   .title {
-    font-size: 1.4rem;
-    margin-bottom: 1.2rem;
+    font-size: 1.5rem;
+  }
+  
+  .warehouseGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  .warehouseCard {
+    padding: 1rem;
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wrapper {
+    padding: 0.5rem;
+  }
+  
+  .floorBtn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .warehouseGrid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
+.warehouseInfo {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.warehousePercent {
+  font-size: 1.2rem;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.noData {
+  margin-top: 3rem;
+  color: #ecf0f1;
+  font-size: 1.2rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive için ufak ayarlamalar */
+@media (max-width: 1400px) {
+  .warehouseGrid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 1200px) {
+  .warehouseGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .floorBtn {
+    flex: 1 1 auto;
+    padding: 0.8rem 1rem;
   }
 
-  .content {
-    font-size: 1rem;
+  .warehouseGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .card {
+    padding: 1.5rem; /* Maintain larger padding on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
     padding: 1rem;
   }
 
-  .logout {
-    font-size: 1rem;
-    padding: 0.7rem;
-    border-radius: 6px;
-  }
-}
-
-@media (max-width: 400px) {
-  .card {
-    padding: 1rem 0.3rem;
-  }
   .title {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.2rem;
+  }
+
+  .warehouseCard {
+    padding: 1.5rem; /* Still larger than before */
+    min-height: 140px;
+  }
+  
+  .warehouseName {
+    font-size: 1.2rem;
+  }
+  
+  .warehouseInfo {
+    font-size: 1rem;
+  }
+  
+  .warehousePercent {
+    font-size: 0.9rem;
   }
 }

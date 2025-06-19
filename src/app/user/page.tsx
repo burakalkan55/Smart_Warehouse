@@ -1,5 +1,7 @@
 import { getUserFromToken } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
+import UserClient from './UserClient'
 import styles from '@/styles/user.module.css'
 
 export default async function UserPage() {
@@ -10,25 +12,20 @@ export default async function UserPage() {
     redirect('/login')
   }
 
+  const warehouses = await prisma.warehouse.findMany()
+
   return (
     <div className={styles.wrapper}>
+    
       <div className={styles.card}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>📦 Kullanıcı Paneli</h1>
-          <p className={styles.userInfo}>
-            👤 Giriş yapan kullanıcı: <strong>{user.name}</strong> 
-          </p>
-          <form action="/api/logout" method="GET">
-            <button type="submit" className={styles.logout}>
-              Çıkış Yap
-            </button>
-          </form>
-        </header>
+           
+       
         <section className={styles.content}>
-          <h2>📍 Depo Verisi</h2>
-          <p>Buraya kullanıcıya özel veri giriş bölümü gelecek...</p>
+         
+          <UserClient user={user} warehouses={warehouses} />
         </section>
       </div>
     </div>
   )
 }
+
