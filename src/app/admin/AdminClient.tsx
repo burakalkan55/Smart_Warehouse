@@ -130,7 +130,9 @@ export default function AdminClient({
           <div className={styles.date}>{new Date().toLocaleDateString('tr-TR')}</div>
           <div className={styles.username}>{user?.name}</div>
           <div className={styles.actions}>
-            <button className={styles.adminBtn}>Admin Kontrol</button>
+            <a href="/admin/logs">
+              <button className={styles.adminBtn}>Log Kayıtları</button>
+            </a>
             <form action="/api/logout" method="GET">
               <button className={styles.logoutBtn}>Çıkış Yap</button>
             </form>

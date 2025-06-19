@@ -21,3 +21,5 @@ export async function getUserFromToken(): Promise<TokenPayload | null> {
     return null
   }
 }
+
+// (değişiklik yok, sadece TransferLog için userId kullanımı önemli)

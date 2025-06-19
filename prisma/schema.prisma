@@ -8,12 +8,13 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  logs      Log[]
+  id            Int      @id @default(autoincrement())
+  name          String   @unique
+  password      String
+  role          Role     @default(USER)
+  createdAt     DateTime @default(now())
+  logs          Log[]
+  transferLogs  TransferLog[]
 }
 
 model Warehouse {
@@ -23,6 +24,8 @@ model Warehouse {
   capacity     Int
   currentStock Int      @default(0)
   createdAt    DateTime @default(now())
+  fromLogs     TransferLog[] @relation("FromWarehouse")
+  toLogs       TransferLog[] @relation("ToWarehouse")
 }
 
 model Log {
@@ -31,6 +34,18 @@ model Log {
   createdAt DateTime @default(now())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
+}
+
+model TransferLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  fromId     Int
+  from       Warehouse @relation("FromWarehouse", fields: [fromId], references: [id])
+  toId       Int
+  to         Warehouse @relation("ToWarehouse", fields: [toId], references: [id])
+  amount     Int
+  createdAt  DateTime @default(now())
 }
 
 enum Role {

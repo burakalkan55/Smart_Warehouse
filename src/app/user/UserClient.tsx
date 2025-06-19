@@ -15,6 +15,15 @@ interface Warehouse {
   currentStock: number
 }
 
+// TransferLog tipi
+interface TransferLog {
+  id: number
+  from: Warehouse
+  to: Warehouse
+  amount: number
+  createdAt: string
+}
+
 const floorNames = {
   0: 'KAT 0',
   '-7': 'KAT -7', 
@@ -24,9 +33,11 @@ const floorNames = {
 export default function UserClient({
   user,
   warehouses: initialWarehouses,
+  transferLogs = [],
 }: {
   user: any
   warehouses: Warehouse[]
+  transferLogs?: TransferLog[]
 }) {
   const [selectedFloor, setSelectedFloor] = useState<number>(0)
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null)
@@ -183,6 +194,8 @@ export default function UserClient({
             </div>
           )}
         </section>
+
+       
 
         <div className={styles.footer}>
           <form action="/api/logout" method="GET">

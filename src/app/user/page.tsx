@@ -14,6 +14,30 @@ export default async function UserPage() {
 
   const warehouses = await prisma.warehouse.findMany()
 
+  // Kullanıcının transfer loglarını çek
+  const transferLogsRaw = await prisma.transferLog.findMany({
+    where: { userId: user.userId },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      from: true,
+      to: true
+    }
+  })
+
+  // Convert all Date fields to string for client compatibility
+  const transferLogs = transferLogsRaw.map(log => ({
+    ...log,
+    createdAt: log.createdAt.toISOString(),
+    from: {
+      ...log.from,
+      createdAt: log.from.createdAt.toISOString(),
+    },
+    to: {
+      ...log.to,
+      createdAt: log.to.createdAt.toISOString(),
+    }
+  }))
+
   return (
     <div className={styles.wrapper}>
     
@@ -22,7 +46,7 @@ export default async function UserPage() {
        
         <section className={styles.content}>
          
-          <UserClient user={user} warehouses={warehouses} />
+          <UserClient user={user} warehouses={warehouses} transferLogs={transferLogs} />
         </section>
       </div>
     </div>

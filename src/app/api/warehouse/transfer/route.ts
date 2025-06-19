@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
+import { getUserFromToken } from '@/lib/auth'
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,6 +8,12 @@ export async function POST(req: NextRequest) {
     
     if (!fromId || !toId || !amount || amount <= 0) {
       return NextResponse.json({ message: 'Geçersiz veri' }, { status: 400 })
+    }
+
+    // Kullanıcıyı al
+    const user = await getUserFromToken()
+    if (!user) {
+      return NextResponse.json({ message: 'Yetkisiz' }, { status: 401 })
     }
 
     // Transaction kullanarak güvenli transfer
@@ -38,6 +45,16 @@ export async function POST(req: NextRequest) {
       await tx.warehouse.update({
         where: { id: toId },
         data: { currentStock: toWarehouse.currentStock + amount }
+      })
+
+      // TransferLog kaydı ekle
+      await tx.transferLog.create({
+        data: {
+          userId: user.userId,
+          fromId,
+          toId,
+          amount
+        }
       })
 
       return { fromWarehouse, toWarehouse }
