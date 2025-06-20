@@ -255,9 +255,10 @@
   background: rgba(0, 0, 0, 0.7);
   z-index: 9999;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   pointer-events: auto;
+  padding-top: 40px;
 }
 
 .modal {
@@ -272,6 +273,7 @@
   position: relative;
   animation: modalPop 0.3s ease-out both;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 0;
 }
 
 @keyframes modalPop {
@@ -388,10 +390,14 @@
 }
 
 @media (max-width: 600px) {
+  .overlay {
+    padding-top: 20px;
+  }
+  
   .modal {
     min-width: 95vw;
     padding: 1.5rem;
-    margin: 1rem;
+    margin: 0 1rem;
   }
   
   .header h3 {
