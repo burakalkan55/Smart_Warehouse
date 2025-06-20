@@ -135,6 +135,9 @@ export default function AdminClient({
           <div className={styles.date}>{new Date().toLocaleDateString('tr-TR')}</div>
           <div className={styles.username}>{user?.name}</div>
           <div className={styles.actions}>
+            <a href="/admin/admin-control">
+              <button className={styles.adminBtn}>Kullanıcı Yönetimi</button>
+            </a>
             <a href="/admin/logs">
               <button className={styles.adminBtn}>Log Kayıtları</button>
             </a>
