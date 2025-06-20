@@ -44,6 +44,7 @@ export default function UserClient({
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null)
   const [warehouses, setWarehouses] = useState<Warehouse[]>(initialWarehouses)
   const [errorReportOpen, setErrorReportOpen] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   // Modal açıkken body scrollunu engelle
   useEffect(() => {
@@ -56,6 +57,18 @@ export default function UserClient({
       document.body.style.overflow = ''
     }
   }, [selectedWarehouse, errorReportOpen])
+
+  // Fullscreen functionality
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    }
+  }, [])
 
   function sortDepoNamesSmart(depolar: Warehouse[]) {
     return depolar.sort((a, b) => {
@@ -174,12 +187,34 @@ export default function UserClient({
     }
   }
 
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen()
+      } else {
+        await document.exitFullscreen()
+      }
+    } catch (error) {
+      console.error('Fullscreen toggle failed:', error)
+      toast.error('Tam ekran özelliği desteklenmiyor.')
+    }
+  }
+
   return (
     <>
       {/* ToastContainer'ı sadece burada bırakın, modal veya başka yerde kullanmayın */}
       <ToastContainer position="top-center" autoClose={1000} />
       <div className={styles.container}>
-        <h1 className={styles.title}>Merhaba, {user.name}!</h1>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Merhaba, {user.name}!</h1>
+          <button
+            className={styles.fullscreenBtn}
+            onClick={toggleFullscreen}
+            title={isFullscreen ? 'Tam ekrandan çık' : 'Tam ekran yap'}
+          >
+            {isFullscreen ? '🗙' : '⛶'}
+          </button>
+        </div>
 
         <section className={styles.floorSelection}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -260,6 +295,6 @@ export default function UserClient({
   )
 }
 
-  
+
 
 

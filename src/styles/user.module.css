@@ -35,6 +35,10 @@
   background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title {
@@ -45,6 +49,33 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Fullscreen Button */
+.fullscreenBtn {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.2rem;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreenBtn:hover {
+  background: linear-gradient(135deg, #2980b9, #21618c);
+  transform: translateY(-50%) translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 }
 
 /* Kat seçimi - Compact */
@@ -385,6 +416,13 @@
   .title {
     font-size: 1.5rem;
   }
+
+  .fullscreenBtn {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+    right: 0.5rem;
+  }
   
   .warehouseGrid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -438,6 +476,13 @@
   
   .warehousePercent {
     font-size: 0.9rem;
+  }
+
+  .fullscreenBtn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    right: 0.5rem;
   }
 }
  
