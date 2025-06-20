@@ -101,9 +101,13 @@ export default function AdminClient({
     setAddModalOpen(true)
   }
 
-  const handleAddSave = async (data: { name?: string; capacity: number }) => {
+  const handleAddSave = async (data: { name?: string; capacity: number; currentStock: number }) => {
     if (!data.name || data.capacity <= 0) {
       toast.error('Tüm alanları doldurun.')
+      return
+    }
+    if (data.currentStock > data.capacity) {
+      toast.error('Güncel ürün miktarı kapasiteden fazla olamaz.')
       return
     }
     try {
@@ -111,6 +115,7 @@ export default function AdminClient({
         name: data.name,
         floor: addFloor,
         capacity: data.capacity,
+        currentStock: data.currentStock || 0,
       })
       setAddModalOpen(false)
       toast.success('Depo başarıyla eklendi.', {

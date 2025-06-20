@@ -126,6 +126,22 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
                 placeholder="0"
               />
             </div>
+            {mode === 'add' && (
+              <div>
+                <span className={styles.label}>Güncel Ürün:</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  min={0}
+                  className={styles.value}
+                  value={editStock}
+                  onChange={handleStockChange}
+                  style={{ width: 80 }}
+                  placeholder="0"
+                />
+              </div>
+            )}
             {mode === 'edit' && (
               <div>
                 <span className={styles.label}>Güncel Ürün:</span>
@@ -169,7 +185,12 @@ export const WarehouseModal: React.FC<WarehouseModalProps> = ({
                     toast.error('Tüm alanları doldurun.')
                     return
                   }
-                  onSave?.({ name: composedName, capacity: editCapacity, currentStock: 0 })
+                  const stockValue = editStock === '' ? 0 : Number(editStock)
+                  if (stockValue > editCapacity) {
+                    toast.error('Güncel ürün miktarı kapasiteden fazla olamaz.')
+                    return
+                  }
+                  onSave?.({ name: composedName, capacity: editCapacity, currentStock: stockValue })
                 } else {
                   if (!editCapacity || editCapacity <= 0) {
                     toast.error('Kapasite boş olamaz.')
