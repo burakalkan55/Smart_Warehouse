@@ -141,6 +141,9 @@ export default function AdminClient({
             <a href="/admin/logs">
               <button className={styles.adminBtn}>Log Kayıtları</button>
             </a>
+            <a href="/admin/errors">
+              <button className={styles.adminBtn}>Hata Bildirimleri</button>
+            </a>
             <form action="/api/logout" method="GET">
               <button className={styles.logoutBtn}>Çıkış Yap</button>
             </form>

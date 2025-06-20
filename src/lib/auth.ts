@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken'
 interface TokenPayload {
   id: number
   name: string
-  userId: number
   role: 'ADMIN' | 'USER'
   iat: number
   exp: number
@@ -22,5 +21,6 @@ export async function getUserFromToken(): Promise<TokenPayload | null> {
     return null
   }
 }
+
 
 // (değişiklik yok, sadece TransferLog için userId kullanımı önemli)

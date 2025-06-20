@@ -2,6 +2,7 @@
 
 import styles from '@/styles/user.module.css'
 import { UserWarehouseModal } from '@/components/UserWarehouseModal'
+import { ErrorReportModal } from '@/components/ErrorReportModal'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
@@ -42,10 +43,11 @@ export default function UserClient({
   const [selectedFloor, setSelectedFloor] = useState<number>(0)
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null)
   const [warehouses, setWarehouses] = useState<Warehouse[]>(initialWarehouses)
+  const [errorReportOpen, setErrorReportOpen] = useState(false)
 
   // Modal açıkken body scrollunu engelle
   useEffect(() => {
-    if (selectedWarehouse) {
+    if (selectedWarehouse || errorReportOpen) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
@@ -53,7 +55,7 @@ export default function UserClient({
     return () => {
       document.body.style.overflow = ''
     }
-  }, [selectedWarehouse])
+  }, [selectedWarehouse, errorReportOpen])
 
   function sortDepoNamesSmart(depolar: Warehouse[]) {
     return depolar.sort((a, b) => {
@@ -144,6 +146,34 @@ export default function UserClient({
     }
   }
 
+  const handleErrorReport = async (message: string) => {
+    try {
+      // Simplified validation - user is already authenticated
+      if (!message.trim()) {
+        toast.error('Hata mesajı boş olamaz.')
+        return
+      }
+
+      const response = await axios.post('/api/error-report', {
+        message: message.trim(),
+        userId: user.id, // Use user.id instead of user.userId
+        userName: user.name
+      })
+      
+      setErrorReportOpen(false)
+      toast.success('Hata bildirimi başarıyla gönderildi.')
+    } catch (error: any) {
+      console.error('Error report submission failed:', error)
+      if (error?.response?.status === 400) {
+        toast.error(error.response.data?.message || 'Geçersiz veri gönderildi.')
+      } else if (error?.message === 'Network Error') {
+        toast.error('Ağ bağlantısı yok. Lütfen internetinizi kontrol edin.')
+      } else {
+        toast.error(error?.response?.data?.message || 'Hata bildirimi gönderilemedi.')
+      }
+    }
+  }
+
   return (
     <>
       {/* ToastContainer'ı sadece burada bırakın, modal veya başka yerde kullanmayın */}
@@ -152,7 +182,15 @@ export default function UserClient({
         <h1 className={styles.title}>Merhaba, {user.name}!</h1>
 
         <section className={styles.floorSelection}>
-          <h2 className={styles.sectionTitle}>🏢 Kat Seçimi</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h2 className={styles.sectionTitle}>🏢 Kat Seçimi</h2>
+            <button
+              className={styles.errorReportBtn}
+              onClick={() => setErrorReportOpen(true)}
+            >
+              ⚠️ Hatalı İşlem Bildirimi
+            </button>
+          </div>
           <div className={styles.floorButtons}>
             {floors.map(floor => (
               <button
@@ -211,8 +249,17 @@ export default function UserClient({
           onTransfer={handleTransfer}
           onRemove={handleRemove}
         />
+
+        <ErrorReportModal
+          isOpen={errorReportOpen}
+          onClose={() => setErrorReportOpen(false)}
+          onSubmit={handleErrorReport}
+        />
       </div>
     </>
   )
 }
+
+  
+
 

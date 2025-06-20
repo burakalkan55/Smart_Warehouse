@@ -16,10 +16,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: 'Geçersiz giriş' }, { status: 401 })
   }
 
-  // ✅ JWT içine name de eklendi
+  // ✅ JWT with consistent field names
   const token = jwt.sign(
     {
-      userId: user.id,
+      id: user.id,
       name: user.name,
       role: user.role
     },

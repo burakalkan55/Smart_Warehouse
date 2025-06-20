@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       // TransferLog kaydı ekle
       await tx.transferLog.create({
         data: {
-          userId: user.userId,
+          userId: user.id, // Changed from user.userId to user.id
           fromId,
           toId,
           amount

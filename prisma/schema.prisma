@@ -48,6 +48,14 @@ model TransferLog {
   createdAt  DateTime @default(now())
 }
 
+model ErrorReport {
+  id        Int      @id @default(autoincrement())
+  message   String
+  userId    Int
+  userName  String
+  createdAt DateTime @default(now())
+}
+
 enum Role {
   ADMIN
   USER

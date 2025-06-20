@@ -16,7 +16,7 @@ export default async function UserPage() {
 
   // Kullanıcının transfer loglarını çek
   const transferLogsRaw = await prisma.transferLog.findMany({
-    where: { userId: user.userId },
+    where: { userId: user.id }, // Changed from user.userId to user.id
     orderBy: { createdAt: 'desc' },
     include: {
       from: true,
